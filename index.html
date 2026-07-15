@@ -1,3 +1,7 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
 <title>Simulador de Ponto — Motoristas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
@@ -227,8 +231,8 @@
     font-weight: 600;
   }
 
-  .breakdown .total dt,
-  .breakdown .total dd { color: var(--text); font-weight: 700; }
+  .breakdown .total-label,
+  .breakdown .total-value { color: var(--text); font-weight: 700; }
 
   .placeholder {
     color: var(--text-muted);
@@ -252,7 +256,44 @@
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .reset-btn {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: none;
+    border: none;
+    padding: 2px 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .reset-btn:hover { opacity: 0.8; }
+
+  .reset-btn:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .reset-btn:disabled {
+    color: var(--text-muted);
+    cursor: default;
+    text-decoration: none;
+    opacity: 0.6;
+  }
 </style>
+</head>
+<body>
 
 <div class="sheet">
   <div>
@@ -263,7 +304,10 @@
 
   <div class="card">
     <div class="field">
-      <label for="saida">Horário de saída da revenda</label>
+      <div class="field-header">
+        <label for="saida">Horário de saída da revenda</label>
+        <button type="button" id="reset" class="reset-btn" disabled>Limpar horário</button>
+      </div>
       <input type="time" id="saida" step="60" />
     </div>
 
@@ -280,8 +324,11 @@
   const REST_MINUTES = 11 * 60 + 30; // 11h descanso + 30min margem
   const input = document.getElementById("saida");
   const output = document.getElementById("output");
+  const resetBtn = document.getElementById("reset");
 
   function render() {
+    resetBtn.disabled = !input.value;
+
     if (!input.value) {
       output.innerHTML = '<p class="placeholder">Preencha o horário de saída para ver o resultado.</p>';
       return;
@@ -309,14 +356,19 @@
           <dt>Saída da revenda</dt><dd>${dh}:${dm}</dd>
           <dt>Descanso interjornada</dt><dd>+ 11h00</dd>
           <dt>Margem de segurança</dt><dd>+ 30min</dd>
-          <div class="total" style="display:contents">
-            <dt>Horário liberado</dt><dd>${rh}:${rm} ${nextDay ? "(dia seguinte)" : ""}</dd>
-          </div>
+          <dt class="total-label">Horário liberado</dt><dd class="total-value">${rh}:${rm}${nextDay ? " (dia seguinte)" : ""}</dd>
         </dl>
       </div>
     `;
   }
 
   input.addEventListener("input", render);
+  resetBtn.addEventListener("click", () => {
+    input.value = "";
+    render();
+    input.focus();
+  });
   render();
 </script>
+</body>
+</html>
