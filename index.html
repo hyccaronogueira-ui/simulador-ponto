@@ -1,0 +1,322 @@
+<title>Simulador de Ponto — Motoristas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --bg: #f3efe6;
+    --surface: #ffffff;
+    --surface-sunken: #ece6d8;
+    --text: #1c1b19;
+    --text-muted: #726b5c;
+    --border: #ddd2b8;
+    --accent: #c9720f;
+    --accent-ink: #ffffff;
+    --success: #2f7d5e;
+    --success-bg: #e3efe8;
+    --shadow: 0 1px 2px rgba(28, 27, 25, 0.06), 0 8px 24px rgba(28, 27, 25, 0.08);
+    --focus-ring: #1f6fb2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181c;
+      --surface: #1b2025;
+      --surface-sunken: #101316;
+      --text: #ece7dc;
+      --text-muted: #9a978d;
+      --border: #2c333a;
+      --accent: #f2a93c;
+      --accent-ink: #1c1300;
+      --success: #59c290;
+      --success-bg: #163224;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+      --focus-ring: #6fb6e8;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14181c;
+    --surface: #1b2025;
+    --surface-sunken: #101316;
+    --text: #ece7dc;
+    --text-muted: #9a978d;
+    --border: #2c333a;
+    --accent: #f2a93c;
+    --accent-ink: #1c1300;
+    --success: #59c290;
+    --success-bg: #163224;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+    --focus-ring: #6fb6e8;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f3efe6;
+    --surface: #ffffff;
+    --surface-sunken: #ece6d8;
+    --text: #1c1b19;
+    --text-muted: #726b5c;
+    --border: #ddd2b8;
+    --accent: #c9720f;
+    --accent-ink: #ffffff;
+    --success: #2f7d5e;
+    --success-bg: #e3efe8;
+    --shadow: 0 1px 2px rgba(28, 27, 25, 0.06), 0 8px 24px rgba(28, 27, 25, 0.08);
+    --focus-ring: #1f6fb2;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(20px, 5vw, 56px) 16px 48px;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .eyebrow {
+    font-family: "Bahnschrift", "Arial Narrow", "Segoe UI", sans-serif;
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex: none;
+  }
+
+  h1 {
+    font-family: "Bahnschrift", "Arial Narrow", "Segoe UI", sans-serif;
+    font-weight: 700;
+    font-stretch: condensed;
+    font-size: clamp(28px, 6vw, 34px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 2px 0 0;
+    text-wrap: balance;
+  }
+
+  .sub {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14.5px;
+    line-height: 1.5;
+    max-width: 46ch;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  input[type="time"] {
+    font-family: "Consolas", "SF Mono", "Cascadia Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    width: 100%;
+    letter-spacing: 0.02em;
+  }
+
+  input[type="time"]:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  .result {
+    border-radius: 12px;
+    background: var(--success-bg);
+    border: 1px solid color-mix(in srgb, var(--success) 35%, var(--border));
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .result-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--success);
+  }
+
+  .result-time {
+    font-family: "Consolas", "SF Mono", "Cascadia Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(40px, 11vw, 52px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .result-day {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--success);
+  }
+
+  .breakdown {
+    margin-top: 4px;
+    border-top: 1px dashed var(--border);
+    padding-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 6px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .breakdown dt { font-weight: 400; }
+  .breakdown dd {
+    margin: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .breakdown .total dt,
+  .breakdown .total dd { color: var(--text); font-weight: 700; }
+
+  .placeholder {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 4px 2px 2px;
+  }
+
+  footer {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    padding: 0 4px;
+  }
+
+  footer strong { color: var(--text); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .result { animation: rise 0.25s ease-out; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="sheet">
+  <div>
+    <p class="eyebrow">🚚 Frota · Controle de jornada</p>
+    <h1>A que horas eu bato o ponto?</h1>
+    <p class="sub">Informe o horário em que você saiu da revenda. O simulador calcula, com base no descanso interjornada obrigatório, a partir de que horário você está liberado para bater o ponto novamente.</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="saida">Horário de saída da revenda</label>
+      <input type="time" id="saida" step="60" />
+    </div>
+
+    <div id="output"></div>
+  </div>
+
+  <footer>
+    <strong>Regra aplicada:</strong> 11 horas de descanso interjornada (mínimo legal) + 30 minutos de margem de segurança, para reduzir o risco de bater o ponto cedo demais.<br />
+    Ferramenta de simulação interna — não substitui o registro oficial de ponto da empresa.
+  </footer>
+</div>
+
+<script>
+  const REST_MINUTES = 11 * 60 + 30; // 11h descanso + 30min margem
+  const input = document.getElementById("saida");
+  const output = document.getElementById("output");
+
+  function render() {
+    if (!input.value) {
+      output.innerHTML = '<p class="placeholder">Preencha o horário de saída para ver o resultado.</p>';
+      return;
+    }
+
+    const [h, m] = input.value.split(":").map(Number);
+    const departureMinutes = h * 60 + m;
+    const totalMinutes = departureMinutes + REST_MINUTES;
+    const releaseMinutes = totalMinutes % (24 * 60);
+    const nextDay = totalMinutes >= 24 * 60;
+
+    const rh = String(Math.floor(releaseMinutes / 60)).padStart(2, "0");
+    const rm = String(releaseMinutes % 60).padStart(2, "0");
+    const dh = String(h).padStart(2, "0");
+    const dm = String(m).padStart(2, "0");
+
+    output.innerHTML = `
+      <div class="result">
+        <span class="result-label">Liberado para bater o ponto a partir de</span>
+        <div class="result-time">
+          ${rh}:${rm}
+          <span class="result-day">${nextDay ? "no dia seguinte" : "no mesmo dia"}</span>
+        </div>
+        <dl class="breakdown">
+          <dt>Saída da revenda</dt><dd>${dh}:${dm}</dd>
+          <dt>Descanso interjornada</dt><dd>+ 11h00</dd>
+          <dt>Margem de segurança</dt><dd>+ 30min</dd>
+          <div class="total" style="display:contents">
+            <dt>Horário liberado</dt><dd>${rh}:${rm} ${nextDay ? "(dia seguinte)" : ""}</dd>
+          </div>
+        </dl>
+      </div>
+    `;
+  }
+
+  input.addEventListener("input", render);
+  render();
+</script>
