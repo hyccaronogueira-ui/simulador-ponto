@@ -284,13 +284,13 @@
   </div>
 
   <footer>
-    <strong>Regra aplicada:</strong> 11 horas de descanso interjornada (mínimo legal), para reduzir o risco de bater o ponto cedo demais.<br />
+    <strong>Regra aplicada:</strong> 11 horas e 10 minutos de descanso interjornada, para reduzir o risco de bater o ponto cedo demais.<br />
     Ferramenta de simulação interna — não substitui o registro oficial de ponto da empresa.
   </footer>
 </div>
 
 <script>
-  const REST_MINUTES = 11 * 60; // 11h de descanso interjornada
+  const REST_MINUTES = 11 * 60 + 10; // 11h10 de descanso interjornada
   const input = document.getElementById("saida");
   const output = document.getElementById("output");
   const resetBtn = document.getElementById("reset");
@@ -321,7 +321,7 @@
     }
 
     const [h, m] = value.split(":").map(Number);
-    const departureMinutes = h * 60 + m;
+    const departureMinutes = h * 60 + 10m;
     const totalMinutes = departureMinutes + REST_MINUTES;
     const releaseMinutes = totalMinutes % (24 * 60);
     const nextDay = totalMinutes >= 24 * 60;
@@ -340,7 +340,7 @@
         </div>
         <dl class="breakdown">
           <dt>Saída da revenda</dt><dd>${dh}:${dm}</dd>
-          <dt>Descanso</dt><dd>+ 11h</dd>
+          <dt>Descanso</dt><dd>+ 11h10</dd>
           <dt class="total-label">Horário liberado</dt><dd class="total-value">${rh}:${rm}${nextDay ? " (dia seguinte)" : ""}</dd>
         </dl>
       </div>
