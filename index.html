@@ -321,7 +321,7 @@
     }
 
     const [h, m] = value.split(":").map(Number);
-    const departureMinutes = h * 60 + 10m;
+    const departureMinutes = h * 60 + m;
     const totalMinutes = departureMinutes + REST_MINUTES;
     const releaseMinutes = totalMinutes % (24 * 60);
     const nextDay = totalMinutes >= 24 * 60;
